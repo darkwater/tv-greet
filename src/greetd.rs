@@ -1,5 +1,6 @@
 use core::pin::pin;
 
+use egui::ahash::HashMap;
 use futures::future::{Either, select};
 use greetd_ipc::{Request, Response, codec::TokioCodec as _};
 use tokio::{
@@ -54,10 +55,10 @@ impl Greetd {
         });
     }
 
-    pub fn start_session(&self, cmd: &[&str]) {
+    pub fn start_session(&self, cmd: &[String], env: &HashMap<String, String>) {
         self.send(Request::StartSession {
-            cmd: cmd.iter().map(|s| s.to_string()).collect(),
-            env: vec![],
+            cmd: cmd.to_vec(),
+            env: env.iter().map(|(k, v)| format!("{k}={v}")).collect(),
         });
     }
 }
